@@ -34,7 +34,8 @@ class Eliza:
         self.posts = {}
         self.synons = {}
         self.keys = {}
-        self.memory = []
+        self.memory = []    # stores entire responses from memory based on keywords in prev inputs
+        self.memory_keys = []   # stores keywords only
 
     def load(self, path):
         key = None
@@ -84,7 +85,7 @@ class Eliza:
             return False
         if parts[0] == '*':
             for index in range(len(words), -1, -1):
-                results.append(words[:index])
+                results.append(words[:index])   # captures matched words from user input
                 if self._match_decomp_r(parts[1:], words[index:], results):
                     return True
                 results.pop()
@@ -120,10 +121,10 @@ class Eliza:
             if not reword:
                 continue
             if reword[0] == '(' and reword[-1] == ')':
-                index = int(reword[1:-1])
+                index = int(reword[1:-1])   # gets the number of the matched word from user input
                 if index < 1 or index > len(results):
                     raise ValueError("Invalid result index {}".format(index))
-                insert = results[index - 1]
+                insert = results[index - 1] # uses the captured text from user input
                 for punct in [',', '.', ';']:
                     if punct in insert:
                         insert = insert[:insert.index(punct)]
@@ -142,64 +143,92 @@ class Eliza:
                 output.append(word)
         return output
 
+
+    # matches key words and sorts them by weight
     def _match_key(self, words, key):
         for decomp in key.decomps:
             results = self._match_decomp(decomp.parts, words)
             if results is None:
                 log.debug('Decomp did not match: %s', decomp.parts)
                 continue
-            log.debug('Decomp matched: %s', decomp.parts)
-            log.debug('Decomp results: %s', results)
+            
             results = [self._sub(words, self.posts) for words in results]
-            log.debug('Decomp results after posts: %s', results)
             reasmb = self._next_reasmb(decomp)
-            log.debug('Using reassembly: %s', reasmb)
+            
             if reasmb[0] == 'goto':
                 goto_key = reasmb[1]
                 if not goto_key in self.keys:
                     raise ValueError("Invalid goto key {}".format(goto_key))
-                log.debug('Goto key: %s', goto_key)
                 return self._match_key(words, self.keys[goto_key])
+            
             output = self._reassemble(reasmb, results)
             if decomp.save:
+                # Store the key phrase as a properly joined string
+                key_phrase = ' '.join(words).strip()
+                self.memory_keys.append(key_phrase)
                 self.memory.append(output)
-                log.debug('Saved to memory: %s', output)
+                log.debug('Saved to memory_keys: %s', key_phrase)
                 continue
             return output
         return None
 
     def respond(self, text):
+        # checks for quit commands
         if text.lower() in self.quits:
             return None
 
+        # cleans up punctuation
         text = re.sub(r'\s*\.+\s*', ' . ', text)
         text = re.sub(r'\s*,+\s*', ' , ', text)
         text = re.sub(r'\s*;+\s*', ' ; ', text)
         log.debug('After punctuation cleanup: %s', text)
 
+        # splits into words
         words = [w for w in text.split(' ') if w]
         log.debug('Input: %s', words)
 
+        memory_prompts = [
+            "Earlier you said '{}'. How does that affect the situation?",
+            "You spoke before about '{}'. Tell me more about that.",
+            "Let's return to '{}'. How does this relate to your current thoughts?"
+        ]
+
+        # check for yes/no responses, and use items from memory to further conversation
+        if any(word.lower() in ['yes', 'no', 'yeah', 'yep', 'y', 'n'] for word in words):
+            if self.memory_keys and self.memory:  # Check both lists have items
+                index = random.randrange(len(self.memory_keys))
+                memory_item = self.memory_keys.pop(index).strip()
+                self.memory.pop(index)
+                prompt = random.choice(memory_prompts)
+                return prompt.format(memory_item)
+
+        # applies pre-substitutions (converts contractions and common phrases)
         words = self._sub(words, self.pres)
         log.debug('After pre-substitution: %s', words)
 
+        # finds matching keywords and sorts them by weight
         keys = [self.keys[w.lower()] for w in words if w.lower() in self.keys]
         keys = sorted(keys, key=lambda k: -k.weight)
         log.debug('Sorted keys: %s', [(k.word, k.weight) for k in keys])
 
         output = None
 
+        # generates a response using key words
         for key in keys:
             output = self._match_key(words, key)
             if output:
                 log.debug('Output from key: %s', output)
                 break
+
+        # fallback responses if there are no key words
         if not output:
             if self.memory:
+                # uses a saved response from memory?
                 index = random.randrange(len(self.memory))
                 output = self.memory.pop(index)
                 log.debug('Output from memory: %s', output)
             else:
+                # default response if there are responses from memory
                 output = self._next_reasmb(self.keys['xnone'].decomps[0])
                 log.debug('Output from xnone: %s', output)
 
@@ -228,8 +257,10 @@ class Eliza:
 
 def main():
     eliza = Eliza()
-    eliza.load('doctor.txt')
+    eliza.load('my_doctor.txt')
     eliza.run()
+    print('Memory: ', eliza.memory)
+
 
 if __name__ == '__main__':
     logging.basicConfig()
