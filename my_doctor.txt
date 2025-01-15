@@ -246,11 +246,11 @@ key: you
     reasmb: Oh, I (2) ?
     reasmb: You're not really talking about me -- are you ?
     reasmb: What are your feelings now ?
-key: yes 0.5
+key: yes 1
   decomp: *
     reasmb: I see. Could you expand on that ?
     reasmb: I understand. Is there anything else that could be contributing to this ?
-key: no 0.5
+key: no 1
   decomp: *
     reasmb: Why not ?
     reasmb: Why 'no' ?

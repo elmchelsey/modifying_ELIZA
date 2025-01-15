@@ -2,6 +2,10 @@ import logging
 import random
 import re
 from collections import namedtuple
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+nltk.download('vader_lexicon')
 
 # Fix Python2/Python3 incompatibility
 try: input = raw_input
@@ -36,6 +40,38 @@ class Eliza:
         self.keys = {}
         self.memory = []    # stores entire responses from memory based on keywords in prev inputs
         self.memory_keys = []   # stores keywords only
+
+        self.suicide_keywords = ['suicide', 'suicidal', 'kill myself', 'want to die', 'want to kill myself', 'want to die', 'want to kill myself', 'want to die', 'want to kill myself']
+        self.crisis_resources = [
+            "National Suicide Prevention Lifeline: 988 or 1-800-273-8255",
+            "Crisis Text Line: Text HOME to 741741"
+        ]
+
+        self.sia = SentimentIntensityAnalyzer()
+
+        self.sentiment_responses = {
+            'very_neg': [
+                'I hear that you are feeling very upset about this.',
+                'This seems to be causing you a lot of distress.',
+                'I know that this is a difficult time for you, and I want to help.',
+            ],
+            'neg': [
+                'That sounds really tough.',
+                'I am sorry to hear that you are feeling this way.',
+            ],
+            'neutral': [
+                'I see.',
+                'Hmm.',
+            ],
+            'pos': [
+                'I am glad to hear that.',
+                'That is amazing to hear.',
+            ],
+            'very_pos': [
+                'That is really awesome to hear!',
+                'I am really glad to hear that you are feeling this way.',
+            ]
+        }
 
     def load(self, path):
         key = None
@@ -171,9 +207,64 @@ class Eliza:
                 continue
             return output
         return None
+    
+    def _handle_suicide(self):
+        
+        crisis_topics = [
+            'self description',
+            'intensity report',
+            'duration report',
+            'plan'
+        ]
+
+        crisis_questions = [
+            'I hear that you are in pain. Can you tell me a bit about the suicidal thoughts?',
+            'How intense are these thoughts?',
+            'How long do the thoughts last?',
+            'Have you made a plan?',
+        ]
+
+        responses = []
+
+        for question in crisis_questions:
+            response = input(question + ' > ')
+            responses.append(response)
+
+        print('Thank you for sharing this with me. Please know that you are not alone, and that there are resources available to you.')
+        print('Here are some resources:')
+        for resource in self.crisis_resources:
+            print(resource)
+
+        with open('suicide_responses.txt', 'a') as file:
+            file.write('Suicide Risk Report\n')
+            for topic, response in zip(crisis_topics, responses):
+                file.write(f"{topic}: {response}\n")
+
+            if responses[3] == 'yes':
+                file.write('Suicide Risk: High\n')
+
+    def _get_sentiment_based_response(self, text):
+        scores = self.sia.polarity_scores(text)
+        compound_score = scores['compound']
+
+        # VADER compound score ranges from -1 (very negative) to +1 (very positive)
+        if compound_score <= -0.5:
+            return random.choice(self.sentiment_responses['very_neg'])
+        elif compound_score <= -0.1:
+            return random.choice(self.sentiment_responses['neg'])
+        elif compound_score >= 0.5:
+            return random.choice(self.sentiment_responses['very_pos'])
+        elif compound_score >= 0.1:
+            return random.choice(self.sentiment_responses['pos'])
+        else:
+            return random.choice(self.sentiment_responses['neutral'])
 
     def respond(self, text):
         # checks for quit commands
+
+        if any(keyword in text.lower() for keyword in self.suicide_keywords):
+            return self._handle_suicide()
+
         if text.lower() in self.quits:
             return None
 
@@ -232,7 +323,19 @@ class Eliza:
                 output = self._next_reasmb(self.keys['xnone'].decomps[0])
                 log.debug('Output from xnone: %s', output)
 
-        return " ".join(output)
+        if output:
+
+            final_response = []
+
+            # add our sentiment-based response 30% of the time 
+            if random.random() < 0.7:
+                sentiment_response = self._get_sentiment_based_response(text)
+                final_response.extend(sentiment_response.split())
+
+            final_response.extend(output)
+            return " ".join(final_response)
+        
+        return " ".join(output) if output else None
 
     def initial(self):
         return random.choice(self.initials)
@@ -259,7 +362,6 @@ def main():
     eliza = Eliza()
     eliza.load('my_doctor.txt')
     eliza.run()
-    print('Memory: ', eliza.memory)
 
 
 if __name__ == '__main__':
