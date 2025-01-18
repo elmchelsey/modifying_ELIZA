@@ -178,11 +178,14 @@ key: i 10
     reasmb: What if you never got (3) ?
     reasmb: What would getting (3) mean to you ?
     reasmb: What does wanting (3) have to do with this discussion ?
+
+  ''' IMPROVEMENT ONE '''
+
   decomp:  * i am * $ @sad *
-    reasmb: It's normal to feel (3) sometimes. Is there something that is causing you to feel this way ?
-    reasmb: I see. Can you tell me more about that ?
-    reasmb: I'm sorry to hear that... What's been happening?
-    reasmb: That sounds tough. Does being (3) make you uncomfortable ? 
+    reasmb: Is there something that is causing you to feel this way ?
+    reasmb: Can you tell me more about that ?
+    reasmb: What's been happening?
+    reasmb: Does being (3) make you uncomfortable ? 
   decomp: * i am * @happy *
     reasmb: How have I helped you to be (3) ?
     reasmb: Has your treatment made you (3) ?
@@ -246,11 +249,14 @@ key: you
     reasmb: Oh, I (2) ?
     reasmb: You're not really talking about me -- are you ?
     reasmb: What are your feelings now ?
-key: yes 1
+
+
+  ''' IMPROVEMENT TWO '''
+key: yes 0
   decomp: *
     reasmb: I see. Could you expand on that ?
     reasmb: I understand. Is there anything else that could be contributing to this ?
-key: no 1
+key: no 0
   decomp: *
     reasmb: Why not ?
     reasmb: Why 'no' ?
@@ -278,20 +284,18 @@ key: can
     reasmb: Perhaps you would like to be able to (2) yourself.
   decomp: * can i *
     reasmb: Whether or not you can (2) depends on you more than me.
-    reasmb: Do you want to be able to (2) ?
+    reasmb: Why is it important to you that you can (2) ?
     reasmb: Perhaps you don't want to (2) .
     reasmb: goto what
 key: what
   decomp: *
     reasmb: Why do you ask ?
-    reasmb: Does that question interest you ?
+    reasmb: Why is that important to you ?
     reasmb: What is it you really wanted to know ?
-    reasmb: Are such questions much on your mind ?
+    reasmb: Why are such questions much on your mind ?
     reasmb: What answer would please you most ?
     reasmb: What do you think ?
     reasmb: What comes to mind when you ask that ?
-    reasmb: Have you asked such questions before ?
-    reasmb: Have you asked anyone else ?
 key: because
   decomp: *
     reasmb: Is that the real reason ?
@@ -301,29 +305,27 @@ key: because
 key: why
   decomp: * why don't you *
     reasmb: Do you believe I don't (2) ?
-    reasmb: Perhaps I will (2) in good time.
     reasmb: Should you (2) yourself ?
     reasmb: You want me to (2) ?
     reasmb: goto what
   decomp: * why can't i *
-    reasmb: Do you think you should be able to (2) ?
-    reasmb: Do you want to be able to (2) ?
-    reasmb: Do you believe this will help you to (2) ?
+    reasmb: Why do you think you should be able to (2) ?
+    reasmb: Why do you want to be able to (2) ?
+    reasmb: Are there any actions do you believe will help you to (2) ?
     reasmb: Have you any idea why you can't (2) ?
     reasmb: goto what
   decomp: *
     reasmb: goto what
 key: everyone 2
   decomp: * @everyone *
-    reasmb: Realy, (2) ?
-    reasmb: Surely not (2) .
+    reasmb: Really, (2) ?
+    reasmb: Surely not (2) . Do you really believe that to be true ?
     reasmb: Can you think of anyone in particular ?
-    reasmb: Who, for example?
+    reasmb: Who, for example ?
     reasmb: Are you thinking of a very special person ?
     reasmb: Who, may I ask ?
     reasmb: Someone special perhaps ?
     reasmb: You have a particular person in mind, don't you ?
-    reasmb: Who do you think you're talking about ?
 key: everybody 2
   decomp: *
     reasmb: goto everyone
@@ -335,7 +337,7 @@ key: noone 2
     reasmb: goto everyone
 key: always 1
   decomp: *
-    reasmb: Can you think of a specific example ?
+    reasmb: Can you tell me about a specific example ?
     reasmb: When ?
     reasmb: What incident are you thinking of ?
     reasmb: Really, always ?
@@ -350,6 +352,6 @@ key: alike 10
     reasmb: Could here really be some connection ?
     reasmb: How ?
 key: like 10
-  decomp: * @be * like *
+  decomp: * @be *like *
     reasmb: goto alike
    
