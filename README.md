@@ -2,7 +2,7 @@
 
 This project modifies and enhances the ELIZA chatbot, originally developed by Joseph Weizenbaum in the late 1960s. The goal is to implement focused, impactful changes that significantly improve ELIZA's ability to respond to user input in a more effective and natural manner. Furthermore, because the ELIZA system is modeled after Rogerian-style psychotherapy, these changes were made in accordance with principles of Rogerian-style (now person-centered) psychotherapy.
 
-Further documentation and example dialogues before and after these modifications can be found in the accompanying report's PDF.
+Further documentation and example dialogues before and after these modifications can be found in the accompanying report's PDF. Original ELIZA and doctor scripts are present as well, whereas modified scripts are denoted my_eliza.py and my_doctor.txt, respectively.
 
 The base ELIZA implementation was sourced from the [ELIZA repository](https://github.com/wadetb/eliza) and customized to introduce modern functionality.  
 
