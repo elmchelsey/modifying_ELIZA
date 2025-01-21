@@ -10,8 +10,8 @@ The base ELIZA implementation was sourced from the [ELIZA repository](https://gi
 
 1. **Replacing Boolean Questions or Statement Responses**: Improved conversational flow by removing or modifying responses that overly rely on Boolean-style questions or repeated statements.
  
-3. **Enhanced Handling of 'Yes' and 'No' Responses**: Added nuanced response logic for better context-specific understanding of affirmative and negative replies.
+2. **Enhanced Handling of 'Yes' and 'No' Responses**: Added nuanced response logic for better context-specific understanding of affirmative and negative replies.
    
-5. **Crisis Handling Implementation**: Integrated mechanisms to detect and appropriately respond to crisis-related input.
+3. **Crisis Handling Implementation**: Integrated mechanisms to detect and appropriately respond to crisis-related input.
      
-7. **Sentiment-Based Empathy Responses**: Introduced sentiment analysis to adjust the chatbot's tone and responses dynamically, fos
+4. **Sentiment-Based Empathy Responses**: Introduced sentiment analysis to adjust the chatbot's tone and responses dynamically, fostering a more empathetic interaction.
