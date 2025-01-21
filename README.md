@@ -1,36 +1,17 @@
-# Eliza chatbot in Python
+# ELIZA Chatbot in Python  
 
-Loosely based on Charles Hayden's version in Java, at http://chayden.net/eliza/Eliza.html. 
+This project modifies and enhances the ELIZA chatbot, originally developed by Joseph Weizenbaum in the late 1960s. The goal is to implement focused, impactful changes that significantly improve ELIZA's ability to respond to user input in a more effective and natural manner. Furthermore, because the ELIZA system is modeled after Rogerian-style psychotherapy, these changes were made in accordance with principles of Rogerian-style (now person-centered) psychotherapy.
 
-I feel that it is fairly complete. However there are some holes, as the library was written immediately prior to my discovery of Joseph Weizenbaum's own description of the original program, which is quite detailed, along with the original "doctor" script. Oh well. A copy of that article is provided in the repo as a reference to the correct behavior.
+Further documentation and example dialogues before and after these modifications can be found in the accompanying report's PDF.
 
-## Usage
+The base ELIZA implementation was sourced from the [ELIZA repository](https://github.com/wadetb/eliza) and customized to introduce modern functionality.  
 
-Can be run interactively:
+## Key Adaptations  
 
-```
-$ python eliza.py
-How do you do.  Please tell me your problem.
-> I would like to have a chat bot.
-You say you would like to have a chat bot ?
-> bye
-Goodbye.  Thank you for talking to me.
-```
-
-...or imported and used as a library:
-
-```python
-import eliza
-
-eliza = eliza.Eliza()
-eliza.load('doctor.txt')
-
-print(eliza.initial())
-while True:
-    said = input('> ')
-    response = eliza.respond(said)
-    if response is None:
-        break
-    print(response)
-print(eliza.final())
-```
+1. **Replacing Boolean Questions or Statement Responses**: Improved conversational flow by removing or modifying responses that overly rely on Boolean-style questions or repeated statements.
+ 
+3. **Enhanced Handling of 'Yes' and 'No' Responses**: Added nuanced response logic for better context-specific understanding of affirmative and negative replies.
+   
+5. **Crisis Handling Implementation**: Integrated mechanisms to detect and appropriately respond to crisis-related input.
+     
+7. **Sentiment-Based Empathy Responses**: Introduced sentiment analysis to adjust the chatbot's tone and responses dynamically, fos
